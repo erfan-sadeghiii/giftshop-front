@@ -1,0 +1,2 @@
+** DONT FORGET TO INSATLL NODE_MODULES **
+        npm i
