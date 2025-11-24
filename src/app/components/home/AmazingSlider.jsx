@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import axios from "axios";
@@ -39,14 +39,18 @@ export default function AmazingSlider() {
     <section className="mx-4 lg:container mt-20">
       <div className="w-full h-80 rounded-xl bg-blue-500 dark:bg-blue-700 p-4 relative">
         <Swiper
-          modules={[Navigation]}
-          spaceBetween={16}
-          slidesPerView={1}
+          modules={[Navigation, Autoplay]}
+          spaceBetween={30}
+          slidesPerView={2}
           breakpoints={{
-            68: { slidesPerView: 1 },
-            768: { slidesPerView: 3 },
-            1024: { slidesPerView: 4 },
+            0: { slidesPerView: 1, spaceBetween: 10 },     // mobile FIX
+            480: { slidesPerView: 2, spaceBetween: 20 },
+            768: { slidesPerView: 2, spaceBetween: 30 },
+            1024: { slidesPerView: 4, spaceBetween: 30 },
           }}
+
+          loop={slides.length > 1} // only loop if more than 1
+          autoplay={{ delay: 1000, disableOnInteraction: false }}
           navigation={{
             prevEl: ".AmazingSlider-prev-slide",
             nextEl: ".AmazingSlider-next-slide",
@@ -55,7 +59,7 @@ export default function AmazingSlider() {
         >
           {/* Timer card */}
           <SwiperSlide>
-            <div className="amazing-card">
+            <div className="amazing-card mx-auto ">
               <img
                 className="w-28 h-28"
                 src="./images/slider/Amazings.svg"
@@ -89,19 +93,19 @@ export default function AmazingSlider() {
 
           {/* Product slides */}
           {slides.map((product) => (
-            <SwiperSlide key={product.id}>
-              <div className="small-card group mx-4">
+            <SwiperSlide key={product.id} >
+              <div className="small-card group mx-auto ">
                 <div className="w-full flex items-center justify-between">
                   <span className="text-gray-400 flex items-center justify-end text-sm gap-x-0.5">
                     <p>
                       {product.comments && product.comments.length > 0
                         ? (
-                            product.comments.reduce(
-                              (acc, c) => acc + (c.isLiked ? 5 : 3),
-                              0
-                            ) / product.comments.length
-                          ).toFixed(1)
-                        : "5.0"}
+                          product.comments.reduce(
+                            (acc, c) => acc + (c.isLiked ? 5 : 3),
+                            0
+                          ) / product.comments.length
+                        ).toFixed(1)
+                        : "0.0"}
                     </p>
                     <svg className="size-4 mb-1">
                       <use href="#star"></use>
@@ -114,7 +118,7 @@ export default function AmazingSlider() {
                     className="small-card_img"
                     src={
                       process.env.NEXT_PUBLIC_API_URL +
-                        (product.images[0] || "/images/products/default.png")
+                      (product.images[0] || "/images/products/default.png")
                     }
                     alt={product.title}
                   />

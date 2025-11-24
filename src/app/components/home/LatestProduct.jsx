@@ -110,7 +110,7 @@ export default function LatestProducts() {
                 {/* Product header */}
                 <div className="product-card_header">
                   <div className="flex items-center gap-x-2">
-                    {["shopping-cart", "heart", "arrows-up-down"].map((icon, i) => (
+                    {/* {["shopping-cart", "heart", "arrows-up-down"].map((icon, i) => (
                       <div key={i} className="tooltip">
                         <button className="rounded-full p-1.5 app-border app-hover">
                           <svg className="size-4">
@@ -125,7 +125,7 @@ export default function LatestProducts() {
                             : "مقایسه"}
                         </div>
                       </div>
-                    ))}
+                    ))} */}
                   </div>
                   {product.discount > 0 && (
                     <span className="product-card_badge">
@@ -151,7 +151,14 @@ export default function LatestProducts() {
                   <div className="product-card_price-wrapper">
                     <div className="product-card_rate">
                       <span className="flex items-center gap-x-0.5 text-gray-400 text-sm">
-                        <p>5.0</p>
+                        <p> {product.comments && product.comments.length > 0
+                        ? (
+                            product.comments.reduce(
+                              (acc, c) => acc + (c.isLiked ? 5 : 3),
+                              0
+                            ) / product.comments.length
+                          ).toFixed(1)
+                        : "0.0"}</p>
                         <svg className="size-4 mb-1">
                           <use href="#star" />
                         </svg>

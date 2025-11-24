@@ -13,7 +13,7 @@ const BottomNavbar = () => {
   ];
 
   return (
-    <ul className="bottom-navbar flex justify-around items-center py-2 bg-white dark:bg-gray-900 shadow-md fixed bottom-0 w-full z-50">
+    <ul className="bottom-navbar flex justify-around items-center py-2 bg-white dark:bg-gray-900 shadow-md fixed bottom-0 w-96  z-50">
       {links.map(({ href, label, icon }) => {
         const isActive =
           href === "/"
