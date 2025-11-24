@@ -3700,6 +3700,14 @@ svg.hidden {
   justify-content: space-between;
 }
 
+@media (max-width: 768px) {
+ .product-card_header {
+  display: flex;
+  width: 95%;
+  align-items: center;
+  justify-content: space-between;
+}
+}
 .product-card_badge {
   position: relative;
   font-family: Dana Medium;

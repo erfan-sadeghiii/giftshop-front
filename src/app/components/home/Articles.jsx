@@ -49,7 +49,8 @@ const Articles = () => {
         </div>
 
         {/* Custom Arrow Buttons */}
-        <div className="flex items-center gap-x-2">
+        <div className="w-full xs:w-auto flex justify-between xs:justify-end items-center gap-x-2">
+          <div className="flex items-center gap-x-2">
           <button className="slider-navigate_btn articleSlider-prev-slide">
             <svg className="size-6 -rotate-[90deg]">
               <use href="#chevron" />
@@ -60,6 +61,9 @@ const Articles = () => {
               <use href="#chevron" />
             </svg>
           </button>
+
+          </div>
+
           <a
             href="/blog"
             className="group shadow-xl text-sm md:text-base flex gap-x-1.5 items-center px-2 h-10 md:px-3 text-white bg-blue-600 rounded-xl"
