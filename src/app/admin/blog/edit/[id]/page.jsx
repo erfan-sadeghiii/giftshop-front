@@ -2,7 +2,12 @@
 
 import { useRef, useState, useEffect, use } from "react";
 import Swal from "sweetalert2";
+import dynamic from "next/dynamic";
 
+const Editor = dynamic(
+  () => import("@tinymce/tinymce-react").then(mod => mod.Editor),
+  { ssr: false }
+);
 export default function SingleBlogEditPage({ params }) {
   const resolvedParams = use(params);
   const id = resolvedParams.id;
@@ -150,13 +155,36 @@ export default function SingleBlogEditPage({ params }) {
         />
  </div>
         {/* Editable Content */}
-        <textarea
+        {/* <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           className="w-full h-96 p-4 border rounded-lg shadow-inner mb-6 resize-none"
           placeholder="محتوای مقاله را وارد کنید..."
-        />
-
+        /> */}
+ <Editor
+              apiKey="9tmzehb3ivzivy1yerginx4rohemst3uq1th2nlnymihruy6"
+              value={content}
+              init={{
+                promotion: false,
+                onboarding: false,
+                branding: false,
+                language: "fa",
+                height: 400,
+                menubar: true,
+                plugins: [
+                  "advlist", "autolink", "lists", "link", "image", "charmap",
+                  "preview", "anchor", "searchreplace", "visualblocks",
+                  "code", "fullscreen", "insertdatetime", "media", "table",
+                  "help", "wordcount"
+                ],
+                toolbar:
+                  "undo redo | formatselect | bold italic backcolor | " +
+                  "alignleft aligncenter alignright alignjustify | " +
+                  "bullist numlist outdent indent | removeformat | help",
+                content_style: "body { font-family:Arial,sans-serif; font-size:14px }",
+              }}
+              onEditorChange={(newValue) => setContent(newValue)}
+            />
         <button
           onClick={handleSave}
           disabled={saving}

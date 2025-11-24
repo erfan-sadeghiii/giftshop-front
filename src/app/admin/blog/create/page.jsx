@@ -1,8 +1,14 @@
 "use client";
 
+
 import { useState } from "react";
 import Swal from "sweetalert2";
+import dynamic from "next/dynamic";
 
+const Editor = dynamic(
+  () => import("@tinymce/tinymce-react").then(mod => mod.Editor),
+  { ssr: false }
+);
 export default function CreateBlogPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -85,6 +91,7 @@ export default function CreateBlogPage() {
           <img
             src={preview? preview : "/placeholder2.png"}
             alt="پیش‌نمایش تصویر"
+            htmlFor="file"
             className="w-full h-64 sm:h-80 md:h-96 object-cover rounded-xl shadow-lg mb-4"
           />
         }
@@ -102,12 +109,37 @@ export default function CreateBlogPage() {
         </div>
 
         {/* Content Textarea */}
-        <textarea
+        {/* <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           className="w-full h-96 p-4 border rounded-lg shadow-inner mb-6 resize-none"
           placeholder="محتوای مقاله را وارد کنید..."
-        />
+        /> */}
+          <Editor
+              apiKey="9tmzehb3ivzivy1yerginx4rohemst3uq1th2nlnymihruy6"
+              value={content}
+              init={{
+                promotion: false,
+                onboarding: false,
+                branding: false,
+                language: "fa",
+                height: 400,
+                menubar: true,
+                plugins: [
+                  "advlist", "autolink", "lists", "link", "image", "charmap",
+                  "preview", "anchor", "searchreplace", "visualblocks",
+                  "code", "fullscreen", "insertdatetime", "media", "table",
+                  "help", "wordcount"
+                ],
+                toolbar:
+                  "undo redo | formatselect | bold italic backcolor | " +
+                  "alignleft aligncenter alignright alignjustify | " +
+                  "bullist numlist outdent indent | removeformat | help",
+                content_style: "body { font-family:Arial,sans-serif; font-size:14px }",
+              }}
+              onEditorChange={(newValue) => setContent(newValue)}
+            />
+
 
         <button
           onClick={handleSave}
