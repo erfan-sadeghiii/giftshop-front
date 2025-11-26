@@ -5,7 +5,7 @@ const PriceAccordion = ({ min,max, onChange }) => {
   const [accordionOpen, setAccordionOpen] = useState(false);
   const [filters, setFilters] = useState({
     priceMin: min || 0,
-    priceMax: max || 900000000,
+    priceMax: max || 30_000_000,
   });
 
   const sliderRef = useRef(null);
@@ -30,7 +30,7 @@ const PriceAccordion = ({ min,max, onChange }) => {
     const offsetX = e.clientX - rect.left;
 
     // RTL logic — move handles from right to left
-    const total = 900000000;
+    const total = 30_000_000;
     let newValue = Math.round(((rect.width - offsetX) / rect.width) * total);
 
     if (dragging === "min") {
@@ -96,8 +96,8 @@ const PriceAccordion = ({ min,max, onChange }) => {
             <div
               className="absolute top-1/2 h-1 bg-blue-500 -translate-y-1/2 rounded"
               style={{
-                left: `${100 - (filters.priceMax / 900000000) * 100}%`,
-                width: `${((filters.priceMax - filters.priceMin) / 900000000) * 100}%`,
+                left: `${100 - (filters.priceMax / 30_000_000) * 100}%`,
+                width: `${((filters.priceMax - filters.priceMin) / 30_000_000) * 100}%`,
               }}
             ></div>
 
@@ -105,7 +105,7 @@ const PriceAccordion = ({ min,max, onChange }) => {
             <div
               className="absolute top-1/2 w-4 h-4 bg-white border-2 border-blue-500 rounded-full -translate-y-1/2 cursor-pointer"
               style={{
-                left: `calc(${100 - (filters.priceMax / 900000000) * 100}% - 0.5rem)`,
+                left: `calc(${100 - (filters.priceMax / 30_000_000) * 100}% - 0.5rem)`,
               }}
               onMouseDown={(e) => startDrag(e, "max")}
             ></div>
@@ -114,7 +114,7 @@ const PriceAccordion = ({ min,max, onChange }) => {
             <div
               className="absolute top-1/2 w-4 h-4 bg-white border-2 border-blue-500 rounded-full -translate-y-1/2 cursor-pointer"
               style={{
-                left: `calc(${100 - (filters.priceMin / 900000000) * 100}% - 0.5rem)`,
+                left: `calc(${100 - (filters.priceMin / 30_000_000) * 100}% - 0.5rem)`,
               }}
               onMouseDown={(e) => startDrag(e, "min")}
             ></div>

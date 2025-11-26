@@ -50,7 +50,7 @@ export default function AmazingSlider() {
           }}
 
           loop={slides.length > 1} // only loop if more than 1
-          autoplay={{ delay: 1000, disableOnInteraction: false }}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
           navigation={{
             prevEl: ".AmazingSlider-prev-slide",
             nextEl: ".AmazingSlider-next-slide",

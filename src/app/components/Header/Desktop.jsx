@@ -180,7 +180,7 @@ const Desktop = ({ }) => {
                             <a href="/blog" className="menu-item_link">وبلاگ</a>
                         </li>
                         <li className="menu-item">
-                            <a href="#" className="menu-item_link">درباره ما</a>
+                            <a href="/about-us" className="menu-item_link">درباره ما</a>
                         </li>
                     </ul>
                 </div>

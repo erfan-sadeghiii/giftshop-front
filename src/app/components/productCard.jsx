@@ -39,7 +39,10 @@ const ProductCard = ({ product, isAdmin = false }) => {
         <div className="product-card_header">
           <div className="flex items-center gap-x-2"></div>
           <span className="product-card_badge">{Math.floor(product.discount)}% تخفیف‌</span>
-        </div> : ""}
+        </div> : <div className="product-card_header">
+          <div className="flex items-center gap-x-2 h-5"></div>
+          
+        </div>}
 
       {/* product img */}
       <a href={`/products/${product.slug}`}>

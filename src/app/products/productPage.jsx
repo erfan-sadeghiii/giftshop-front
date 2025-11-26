@@ -18,7 +18,7 @@ export default function ProductsPage() {
   const [selectedChildCategory, setSelectedChildCategory] = useState(null);
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [priceMin, setPriceMin] = useState(parseInt(searchParams.get("priceMin")) || 0);
-  const [priceMax, setPriceMax] = useState(parseInt(searchParams.get("priceMax")) || 900000000);
+  const [priceMax, setPriceMax] = useState(parseInt(searchParams.get("priceMax")) || 30_000_000);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 6;
 
@@ -35,7 +35,7 @@ export default function ProductsPage() {
     const child = searchParams.get("childCategory");
     const available = searchParams.get("available") === "true";
     const min = parseInt(searchParams.get("priceMin")) || 0;
-    const max = parseInt(searchParams.get("priceMax")) || 900000000;
+    const max = parseInt(searchParams.get("priceMax")) || 30_000_000;
     const sort = searchParams.get("sort") || "محبوب ترین";
 
     setSelectedCategory(cat || "all");
@@ -188,7 +188,7 @@ const updateQueryParams = (updates) => {
     setSelectedChildCategory(null);
     setOnlyAvailable(false);
     setPriceMin(0);
-    setPriceMax(900000000);
+    setPriceMax(30_000_000);
     setCurrentPage(1);
     updateQueryParams({
       category: null,
