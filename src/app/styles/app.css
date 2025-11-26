@@ -1287,7 +1287,7 @@ img {
 .contents {
   display: contents;
 }
-svg{
+svg.hidden{
   width: 0;
   height: 0;
 }

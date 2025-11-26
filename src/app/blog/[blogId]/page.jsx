@@ -80,7 +80,7 @@ const SingleBlogPage = ({ params }) => {
 
 
         <div
-          className="space-y-6 text-gray-800 dark:text-white leading-relaxed"
+          className="space-y-6 prose text-gray-800 dark:text-white leading-relaxed"
           dangerouslySetInnerHTML={{ __html: blog.content }}
         />
       </div>

@@ -4,7 +4,12 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import ProductFeatureManager from "@/app/components/adminPanel/productFeatureManager";
+import dynamic from "next/dynamic";
 
+const Editor = dynamic(
+  () => import("@tinymce/tinymce-react").then(mod => mod.Editor),
+  { ssr: false }
+);
 const EditProductClient = ({ slug }) => {
   const router = useRouter();
 
@@ -220,12 +225,37 @@ const EditProductClient = ({ slug }) => {
           <label className="block mb-2 text-gray-700 dark:text-gray-300 font-medium">
             توضیحات محصول
           </label>
-          <textarea
+          {/* <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
             className="border dark:border-gray-700 dark:bg-gray-800 p-3 rounded-xl w-full h-68 resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500"
-          />
+          /> */}
+           <Editor
+             name="description"
+              apiKey="9tmzehb3ivzivy1yerginx4rohemst3uq1th2nlnymihruy6"
+              value={formData.description}
+              init={{
+                promotion: false,
+                onboarding: false,
+                branding: false,
+                language: "fa",
+                height: 400,
+                menubar: true,
+                plugins: [
+                  "advlist", "autolink", "lists", "link", "image", "charmap",
+                  "preview", "anchor", "searchreplace", "visualblocks",
+                  "code", "fullscreen", "insertdatetime", "media", "table",
+                  "help", "wordcount"
+                ],
+                toolbar:
+                  "undo redo | formatselect | bold italic backcolor | " +
+                  "alignleft aligncenter alignright alignjustify | " +
+                  "bullist numlist outdent indent | removeformat | help",
+                content_style: "body { font-family:Arial,sans-serif; font-size:14px }",
+              }}
+              onEditorChange={(value)=>setFormData((prev) => ({ ...prev, ["description"]: value }))}
+            />
         </div>
 
         <div className="grid md:grid-cols-3 gap-4">

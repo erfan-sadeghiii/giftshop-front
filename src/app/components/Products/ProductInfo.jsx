@@ -54,7 +54,7 @@ const ProductTabs = ({ comments = [], description = "", features = [],productId 
           <h2 className="font-DanaDemiBold border-b-2 border-blue-500 w-fit p-1 text-lg">
             معرفی
           </h2>
-          <p className="mt-4 leading-8 ">{description}</p>
+          <p className="mt-4 leading-8 prose" dangerouslySetInnerHTML={{ __html: description }}></p>
         </div>
       )}
 
