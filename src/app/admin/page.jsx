@@ -10,6 +10,7 @@ import AdminManageBanners from "../components/adminPanel/adminManageBanner";
 import TicketSystem from "../components/dashboard/TicketSystem";
 import UsersSection from "../components/adminPanel/usersSection";
 import MegaMenuAdmin from "../components/adminPanel/adminMegamenuSection";
+import AdminAmazingSlider from "../components/adminPanel/AdminAmazingSlider";
 
 // Example section components (you can create each in /components/admin)
 // import ProductsManager from "../components/admin/ProductsManager";
@@ -31,6 +32,7 @@ const AdminPanel = () => {
         { id: "megamenu", label: "مگا منو", icon: "#photo" },
         { id: "tickets", label: "تیکت ها", icon: "#photo" },
         { id: "users", label: "کاربران", icon: "#photo" },
+        { id: "amazing-slider", label: "پیشنهاد شگفت انگیز", icon: "#photo" },
         { id: "logout", label: "خروج", icon: "#arrow-left-end", isDanger: true },
     ];
 
@@ -60,6 +62,9 @@ const AdminPanel = () => {
             case "users":
                 
                 return <UsersSection/>;
+            case "amazing-slider":
+                
+                return <AdminAmazingSlider/>;
             case "logout":
                 return (
                     <div className="p-4 bg-red-100 dark:bg-red-900 rounded-lg shadow text-red-500">
