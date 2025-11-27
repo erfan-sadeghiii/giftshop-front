@@ -70,9 +70,9 @@ const Footer = ({ }) => {
                 {/* <span className="w-16 h-16 lg:w-20 lg:h-20 flex-center rounded-xl"> */}
                 {/* <img className="w-16 h-16" src="/images/footer/2.png" alt="" /> */}
                 <span className="w-16 h-16 lg:w-20 lg:h-20 flex-center rounded-xl">
-                  <a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=676156&Code=NpPGAQdYpi6XGJXLMFhxnrNo4fWXvYkd' >
+                  <a referrerPolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=676156&Code=NpPGAQdYpi6XGJXLMFhxnrNo4fWXvYkd' >
 
-                  <img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=676156&Code=NpPGAQdYpi6XGJXLMFhxnrNo4fWXvYkd' alt='' style={{cursor:'pointer'}} code='NpPGAQdYpi6XGJXLMFhxnrNo4fWXvYkd'/>
+                  <img referrerPolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=676156&Code=NpPGAQdYpi6XGJXLMFhxnrNo4fWXvYkd' alt='' style={{cursor:'pointer'}} code='NpPGAQdYpi6XGJXLMFhxnrNo4fWXvYkd'/>
                   </a>
                 </span>
 
