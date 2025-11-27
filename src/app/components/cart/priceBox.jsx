@@ -1,6 +1,52 @@
 "use client";
 
+import { selectCartEntities } from "@/app/cartSlice";
+import { useAuth } from "@/context/AuthContext";
+import { useSelector } from "react-redux";
+
 const PriceBox = ({ count = 0, totalPrice = 0, totalDiscount = 0, finalPrice = 0 }) => {
+  // const {user} = useAuth()
+  const { accessToken } = useAuth()
+  const cart = useSelector(selectCartEntities);
+  const cartItems = Object.values(cart || {});
+  // console.log(cartItems);
+  
+  const handlePayment = async () => {
+    try {
+      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/shop/payment/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+
+        },
+        body: JSON.stringify({
+          amount: finalPrice,
+          // user:user.id,
+          cartItems,
+          description: "Transaction description (change this)",
+          metadata: {
+            mobile: "09121234567",
+            email: "info.test@gmail.com",
+          },
+        }),
+      });
+
+      const data = await res.json();
+      console.log(data);
+
+      if (data) {
+        window.location.href = data.payment_url
+
+      } else {
+        alert(data.errors?.message || "خطا در ایجاد پرداخت");
+      }
+    } catch (err) {
+      alert("خطای اتصال");
+      console.error(err);
+    }
+  };
+
   return (
     <div className="w-full lg:w-1/4 lg:sticky top-5 flex flex-col gap-y-4">
       <ul className="child:flex child:items-center child:justify-between space-y-8">
@@ -25,15 +71,15 @@ const PriceBox = ({ count = 0, totalPrice = 0, totalDiscount = 0, finalPrice = 0
         </li>
       </ul>
 
-      <a
-        href="./checkout.html"
+      <button
+        onClick={handlePayment}
         className="w-full mt-4 flex items-center gap-x-1 justify-center bg-blue-500 text-white hover:bg-blue-600 transition-all rounded-lg shadow py-2"
       >
         تایید و تکمیل سفارش
         <svg className="w-5 h-5">
           <use href="#shopping-bag" />
         </svg>
-      </a>
+      </button>
     </div>
   );
 };
