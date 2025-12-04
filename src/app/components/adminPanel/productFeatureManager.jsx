@@ -143,7 +143,7 @@ const ProductFeatureManager = ({ productId }) => {
           name="feature"
           value={form.feature_detail}
           onChange={handleChange}
-          className="border dark:border-gray-700 dark:bg-gray-800 rounded-xl p-3 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500"
+          className="border  bg-white border-gray-700 dark:border-gray-700 dark:bg-gray-800 rounded-xl p-3 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500"
         >
           <option value="">انتخاب ویژگی</option>
           {availableFeatures.map((f) => (
@@ -159,7 +159,7 @@ const ProductFeatureManager = ({ productId }) => {
           value={form.value}
           onChange={handleChange}
           placeholder="مقدار ویژگی (مثلاً: قرمز، 128GB)"
-          className="border dark:border-gray-700 dark:bg-gray-800 rounded-xl p-3 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500"
+          className="border  bg-white border-gray-700 dark:border-gray-700 dark:bg-gray-800 rounded-xl p-3 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500"
         />
 
         <button

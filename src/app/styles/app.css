@@ -619,6 +619,16 @@ input,
   outline-offset: 2px;
 }
 
+input.border,
+  textarea.border {
+  /* resize: none; */
+  border-style: solid;
+
+  /* outline: 2px solid transparent; */
+  /* outline-offset: 2px; */
+}
+
+
 img {
   display: block;
   width: 100%;
