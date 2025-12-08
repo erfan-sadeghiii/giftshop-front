@@ -53,6 +53,7 @@ const TicketSystem = ({ isAdmin = false }) => {
     const fetchTickets = async () => {
       try {
         const res = await fetch(`${API_URL}/shop/tickets/`, {
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
@@ -97,6 +98,7 @@ const TicketSystem = ({ isAdmin = false }) => {
     try {
       const res = await fetch(`${API_URL}/shop/tickets/`, {
         method: "POST",
+        credentials: "include",
         headers: { Authorization: `Bearer ${accessToken}` },
         body: formData,
       });
@@ -139,6 +141,7 @@ const TicketSystem = ({ isAdmin = false }) => {
 
     try {
       const res = await fetch(`${API_URL}/shop/replies/`, {
+        credentials: "include",
         method: "POST",
         headers: {
           "Content-Type": "application/json",

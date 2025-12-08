@@ -57,7 +57,7 @@ export default function LoginPage() {
             </label>
 
             <div className="relative ">
-               <span
+              <span
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute left-4 top-4 cursor-pointer text-gray-600 dark:text-gray-200"
               >
@@ -98,18 +98,23 @@ export default function LoginPage() {
                 required
               />
 
-             
+
             </div>
           </div>
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-blue-600 p-3 text-black dark:text-white font-semibold transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            ورود
-          </button>
+          <div>
+
+            <button
+              type="submit"
+              className="w-full rounded-lg bg-blue-600 p-3 text-black dark:text-white font-semibold transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              ورود
+            </button>
+            <a href="/mobile-login" className="w-full rounded-lg bg-gray-600 p-3 mt-4 text-blue-500 dark:text-blue-500 font-semibold transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+            >ورود با تلفن همراه</a>
+          </div>
         </form>
 
         <p className="mt-6 text-center text-sm dark:text-gray-200 text-gray-600">

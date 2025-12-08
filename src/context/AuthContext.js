@@ -20,17 +20,14 @@ const getCookie = (name) => {
   }, null);
 };
 
-// ---------------- Axios instances ----------------
+// ---------------- Axios ----------------
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  headers: { "Content-Type": "application/json" },
   withCredentials: true,
 });
 
-// separate instance (no interceptors) only for refreshing tokens
 const refreshApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  headers: { "Content-Type": "application/json" },
   withCredentials: true,
 });
 
@@ -39,47 +36,42 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [accessToken, setAccessToken] = useState(null);
 
-  // ---------------- Refresh token ----------------
+  // ---------------- Refresh token (NO refresh in body) ----------------
   const refreshAccessToken = async () => {
-   
-    
-    const refresh = getCookie("refresh2");
-    if (!refresh) return false;
-
     try {
-      const { data } = await refreshApi.post("/api/accounts/refresh/", { refresh });
+      const { data } = await refreshApi.post("/api/accounts/refresh/");
+
       setAccessToken(data.access);
-      setCookie("access2", data.access);
+      setCookie("access", data.access);
+
       return true;
-    } catch (err) {
-      console.error("Refresh failed:", err);
+    } catch {
       setAccessToken(null);
-      setCookie("access2", "", -1);
-      setCookie("refresh2", "", -1);
+      setCookie("access", "", -1);
       return false;
     }
   };
 
   // ---------------- Axios interceptor ----------------
   useEffect(() => {
+    setAccessToken(getCookie("access"))
     const requestInterceptor = api.interceptors.request.use((config) => {
-      const token = accessToken || getCookie("access2");
+      const token = accessToken || getCookie("access");
       if (token) config.headers.Authorization = `Bearer ${token}`;
       return config;
     });
 
     const responseInterceptor = api.interceptors.response.use(
-      (response) => response,
+      (res) => res,
       async (error) => {
-        const originalRequest = error.config;
+        const original = error.config;
 
-        if (error.response?.status === 401 && !originalRequest._retry) {
-          originalRequest._retry = true;
+        if (error.response?.status === 401 && !original._retry) {
+          original._retry = true;
           const refreshed = await refreshAccessToken();
           if (refreshed) {
-            const newToken = getCookie("access2");
-            originalRequest.headers.Authorization = `Bearer ${newToken}`;
-            return api.request(originalRequest);
+            original.headers.Authorization = "Bearer " + getCookie("access");
+            return api(original);
           }
         }
 
@@ -93,9 +85,9 @@ export const AuthProvider = ({ children }) => {
     };
   }, [accessToken]);
 
-  // ---------------- Fetch current user ----------------
-  const fetchUser = async (retry = true) => {
-    const token = accessToken || getCookie("access2");
+  // ---------------- Fetch user ----------------
+  const fetchUser = async () => {
+    const token = accessToken || getCookie("access");
     if (!token) {
       setUser(null);
       setLoading(false);
@@ -103,31 +95,31 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      await refreshAccessToken();
       const { data } = await api.get("/api/accounts/me/");
       setUser(data);
-    } catch (err) {
-      if (err.response?.status === 401 && retry) {
-        const refreshed = await refreshAccessToken();
-        
-        
-        if (refreshed) return fetchUser(false);
-        setUser(null);
+    } catch {
+      const refreshed = await refreshAccessToken();
+      if (refreshed) {
+        const { data } = await api.get("/api/accounts/me/");
+        setUser(data);
       } else {
         setUser(null);
       }
-    } finally {
-      setLoading(false);
     }
+
+    setLoading(false);
   };
 
   // ---------------- Login ----------------
   const login = async ({ username, password }) => {
     try {
       const { data } = await api.post("/api/accounts/login/", { username, password });
+
       setAccessToken(data.access);
-      setCookie("access2", data.access);
-      setCookie("refresh2", data.refresh);
+      setCookie("access", data.access);
+
+      // refresh_token cookie already set by Django (HttpOnly)
+
       await fetchUser();
       return { success: true };
     } catch (err) {
@@ -135,22 +127,57 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+
+
+  // ---------------- Login with sms ---------------
+const login_with_sms = async ({ phone, code }) => {
+  try {
+    const { data } = await api.post(
+      "/api/accounts/login-phone/",
+      { phone, code }
+    );
+
+    setAccessToken(data.access);
+    setCookie("access", data.access);
+
+    await fetchUser();
+    return { success: true };
+
+  } catch (err) {
+    const res = err.response;
+
+    return {
+      success: false,
+      status: res?.status,
+      message: res?.data?.detail || "Login failed",
+      lockout: res?.data?.lockout || null,
+    };
+  }
+};
+
+
+
+
+
   // ---------------- Register ----------------
-  const register = async ({ username, email, password, password2 }) => {
+  const register = async ({ username, email, password, password2,discord,phone }) => {
     try {
       const { data } = await api.post("/api/accounts/register/", {
         username,
         email,
         password,
         password2,
+        discord,
+         phone
       });
+
       setAccessToken(data.access);
-      setCookie("access2", data.access);
-      setCookie("refresh2", data.refresh);
+      setCookie("access", data.access);
+
       await fetchUser();
       return { success: true };
     } catch (err) {
-      return { success: false, errors: err.response?.data || { detail: "Registration failed" } };
+      return { success: false, errors: err.response?.data };
     }
   };
 
@@ -158,36 +185,29 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await api.post("/api/accounts/logout/");
-    } catch (err) {
-      console.error(err);
     } finally {
       setUser(null);
       setAccessToken(null);
-      setCookie("access2", "", -1);
-      setCookie("refresh2", "", -1);
+      setCookie("access", "", -1);
       window.location.href = "/";
     }
   };
 
-  // ---------------- Initialize ----------------
   useEffect(() => {
-    (async () => {
-      await fetchUser();
-    })();
-  }, []);
-
-  const isAuthenticated = !!user;
+    fetchUser();
+  }, [fetchUser]);
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated,
+        isAuthenticated: !!user,
         loading,
         login,
         register,
         logout,
-        accessToken,
+         accessToken,
+         login_with_sms,
         api,
       }}
     >

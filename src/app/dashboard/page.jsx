@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import TicketSystem from "../components/dashboard/TicketSystem";
 import { useAuth } from "@/context/AuthContext";
+import UserInfoSection from "../components/dashboard/userInfoSection";
 
 const Page = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -156,9 +157,12 @@ const Page = () => {
 
       case "account":
         return (
+          <>
           <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
             <h2 className="font-DanaDemiBold text-lg mb-3">اطلاعات حساب</h2>
           </div>
+          <UserInfoSection/>
+          </>
         );
       case "ticket":
         return <TicketSystem />;

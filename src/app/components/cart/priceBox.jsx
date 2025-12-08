@@ -3,48 +3,63 @@
 import { selectCartEntities } from "@/app/cartSlice";
 import { useAuth } from "@/context/AuthContext";
 import { useSelector } from "react-redux";
-
+import Swal from "sweetalert2";
 const PriceBox = ({ count = 0, totalPrice = 0, totalDiscount = 0, finalPrice = 0 }) => {
   // const {user} = useAuth()
-  const { accessToken } = useAuth()
+  const { accessToken, user } = useAuth()
   const cart = useSelector(selectCartEntities);
   const cartItems = Object.values(cart || {});
   // console.log(cartItems);
-  
+
   const handlePayment = async () => {
-    try {
-      const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/shop/payment/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`
-
-        },
-        body: JSON.stringify({
-          amount: finalPrice,
-          // user:user.id,
-          cartItems,
-          description: "Transaction description (change this)",
-          metadata: {
-            mobile: "09121234567",
-            email: "info.test@gmail.com",
-          },
-        }),
-      });
-
-      const data = await res.json();
-      console.log(data);
-
-      if (data) {
-        window.location.href = data.payment_url
-
-      } else {
-        alert(data.errors?.message || "خطا در ایجاد پرداخت");
-      }
-    } catch (err) {
-      alert("خطای اتصال");
-      console.error(err);
+    if (!user.verified) {
+       Swal.fire({
+    title: "ابتدا باید شماره تلفن خود را در بخش اطلاعات حساب تایید کنید",
+    icon: "warning",
+    confirmButtonText: "تایید شماره تلفن",
+    allowOutsideClick: false,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Redirect to your verification page
+      window.location.href = "/dashboard"; // change this to your page
     }
+  });
+    } else {
+      try {
+        const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/shop/payment/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`
+
+          },
+          body: JSON.stringify({
+            amount: finalPrice,
+            // user:user.id,
+            cartItems,
+            description: "Transaction description (change this)",
+            metadata: {
+              mobile: "09121234567",
+              email: "info.test@gmail.com",
+            },
+          }),
+        });
+
+        const data = await res.json();
+        console.log(data);
+
+        if (data) {
+          window.location.href = data.payment_url
+
+        } else {
+          alert(data.errors?.message || "خطا در ایجاد پرداخت");
+        }
+      } catch (err) {
+        alert("خطای اتصال");
+        console.error(err);
+      }
+    }
+
   };
 
   return (
