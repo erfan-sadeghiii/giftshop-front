@@ -31,7 +31,7 @@ export default function LoginPage() {
 
     try {
       const res = await api.post("/api/accounts/send-login-code/", { phone });
-      console.log(res.data);
+      // console.log(res.data);
       setStep(2);
     } catch (err) {
       const data = err.response?.data;

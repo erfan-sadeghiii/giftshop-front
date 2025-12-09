@@ -1,0 +1,112 @@
+PROJECT STRUCTURE DOCUMENTATION
+===============================
+
+This document describes the structure of your Next.js project based on your
+directory listing and our previous conversations about admin checkouts, frontend
+UI, and your workflow.
+
+------------------------------------------------------------
+ROOT DIRECTORY
+------------------------------------------------------------
+/eslint.config.mjs                  → ESLint configuration
+/jsconfig.json                     → Path aliasing / JS config
+/next.config.mjs                   → Next.js project config
+/node_modules/                     → Dependencies
+/note.txt                          → General notes (custom)
+/package.json                      → Project dependencies & scripts
+/package-lock.json                 → Lock file
+/postcss.config.mjs                → PostCSS/Tailwind processor config
+/public/                           → Static assets (images, icons)
+/README.md                         → Project readme
+/src/                              → Main application source code
+
+------------------------------------------------------------
+SRC DIRECTORY
+------------------------------------------------------------
+/src/context/                      → React Context (AuthContext, etc.)
+/src/middleware.js                 → Auth/Rewrite middleware (Next.js)
+/src/app/                          → App Router pages & modules
+
+------------------------------------------------------------
+SRC/APP DIRECTORY
+------------------------------------------------------------
+/src/app/about-us/                 → "About Us" static page
+
+/src/app/admin/                    → Admin panel pages
+    - Contains admin checkouts, dashboard tools, etc.
+
+/src/app/blog/                     → Blog listing & detail pages
+
+/src/app/cart/                     → Shopping cart 
+/src/app/cartSlice.js              → Redux slice for cart logic
+
+/src/app/components/               → Shared  components for each page is seprated 
+
+/src/app/dashboard/                → User dashboard modules
+
+/src/app/final-check/              → Checkout confirmation page
+
+/src/app/fonts/                    →fonts 
+
+/src/app/globals.css               → Global Tailwind styles
+
+/src/app/hooks/                    → Custom React hooks
+
+/src/app/layout.js                 → Root layout wrapper 
+
+/src/app/login/                    → Login form page
+
+/src/app/not-found.js              → 404 page
+
+/src/app/page.js                   → Home page
+
+/src/app/products/                 → Products list + product detail pages
+
+/src/app/sign-up/                  → Registration page
+
+/src/app/store.js                  → Redux store setup
+
+/src/app/styles/                   → Additional CSS modules
+==================
+SRC/APP/COMPONENTS
+==================
+
+This folder contains reusable React components for different parts of the
+application. Organized by feature or function.
+
+------------------------------------------------------------
+COMPONENTS LIST
+------------------------------------------------------------
+
+/adminPanel/                       → Admin panel related components
+/ArticleCard.jsx                   → Card UI for blog articles
+/cart/                             → Shopping cart components (buttons, mini-cart, summaries)
+/dashboard/                        → Dashboard widgets and cards
+/Footer.jsx                        → Footer component
+/Header/                           → Header folder (possibly multiple header variations)
+/Header.jsx                         → Main header component (navigation bar, logo)
+/home/                              → Home page specific components (hero, banners, sliders)
+/Icons.jsx                          → SVG or icon components for consistent usage
+/productCard.jsx                    → Product card component (used in listings)
+/Products/                           → product listing, filtering, or detail components
+/appInitializer.jsx                 → App-level initialization (context providers, setup)
+/blog/                              → Blog-related components 
+/clientProvider.jsx                  → Provider for client-side state/context
+
+------------------------------------------------------------
+NOTES FOR WORKFLOW
+------------------------------------------------------------
+• Admin checkout panel fetches data from:
+  /shop/admin/checkouts/
+
+• Uses SweetAlert for notifications (your preference).
+
+• Uses TailwindCSS for UI structure and styling.
+
+• Uses Redux Toolkit for cart state.
+
+• Uses custom AuthContext for token handling.
+
+------------------------------------------------------------
+END OF DOCUMENT
+------------------------------------------------------------

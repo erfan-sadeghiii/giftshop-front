@@ -16,7 +16,7 @@ export default function UserInfoSection() {
 
     try {
       const res = await api.post("/api/accounts/send-code/", { mobile: phone });
-      console.log("SEND CODE RESPONSE:", res.data);
+      // console.log("SEND CODE RESPONSE:", res.data);
 
       return { ok: true }; // no error
 
@@ -132,7 +132,7 @@ export default function UserInfoSection() {
         mobile: phone,
       });
 
-      console.log("VERIFY CODE RESPONSE:", res.data);
+      // console.log("VERIFY CODE RESPONSE:", res.data);
 
       Swal.fire("موفق!", "شماره با موفقیت تأیید شد.", "success");
     } catch (err) {

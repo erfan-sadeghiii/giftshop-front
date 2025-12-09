@@ -112,8 +112,8 @@ export default function LoginPage() {
             >
               ورود
             </button>
-            <a href="/mobile-login" className="w-full rounded-lg bg-gray-600 p-3 mt-4 text-blue-500 dark:text-blue-500 font-semibold transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
-            >ورود با تلفن همراه</a>
+            <div class="w-full flex justify-center"><a href="/mobile-login" class="w-full text-center rounded-lg bg-gray-600 p-3 mt-4 text-blue-500 dark:text-blue-500 font-semibold transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400">ورود با تلفن همراه</a></div>
+
           </div>
         </form>
 
