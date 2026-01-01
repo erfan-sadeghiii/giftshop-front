@@ -1,53 +1,65 @@
 "use client";
 
 import { useEffect, useState, useMemo, useRef } from "react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import ProductCard from "../components/productCard";
 import BreadCrumb from "../components/Products/BreadCrumb";
 import SideFilterBox from "../components/Products/ProductsSideFilter";
 
 export default function ProductsPage() {
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
   const isUpdatingUrl = useRef(false);
+
+  const lastQuery = useRef({
+    category: "all",
+    childCategory: null,
+    available: false,
+    priceMin: 0,
+    priceMax: 30_000_000,
+    sort: "محبوب ترین",
+  });
 
   const [products, setProducts] = useState([]);
   const [sortOption, setSortOption] = useState("محبوب ترین");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedChildCategory, setSelectedChildCategory] = useState(null);
   const [onlyAvailable, setOnlyAvailable] = useState(false);
-  const [priceMin, setPriceMin] = useState(parseInt(searchParams.get("priceMin")) || 0);
-  const [priceMax, setPriceMax] = useState(parseInt(searchParams.get("priceMax")) || 30_000_000);
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 6;
+  const [priceMin, setPriceMin] = useState(0);
+  const [priceMax, setPriceMax] = useState(30_000_000);
+
+  const [visibleCount, setVisibleCount] = useState(6); // initial products to show
+  const loadCount = 6; // load 6 more on scroll
 
   const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/shop/products/`;
 
-  // ---- Sync state from URL ----
+  // ---- Sync state from URL or fallback to lastQuery ----
   useEffect(() => {
     if (isUpdatingUrl.current) {
       isUpdatingUrl.current = false;
       return;
     }
 
-    const cat = searchParams.get("category");
-    const child = searchParams.get("childCategory");
-    const available = searchParams.get("available") === "true";
-    const min = parseInt(searchParams.get("priceMin")) || 0;
-    const max = parseInt(searchParams.get("priceMax")) || 30_000_000;
-    const sort = searchParams.get("sort") || "محبوب ترین";
+    const cat = searchParams.get("category") || lastQuery.current.category;
+    const child = searchParams.get("childCategory") || lastQuery.current.childCategory;
+    const available =
+      searchParams.get("available") === "true" || lastQuery.current.available;
+    const min = parseInt(searchParams.get("priceMin")) || lastQuery.current.priceMin;
+    const max = parseInt(searchParams.get("priceMax")) || lastQuery.current.priceMax;
+    const sort = searchParams.get("sort") || lastQuery.current.sort;
 
-    setSelectedCategory(cat || "all");
-    setSelectedChildCategory(child || null);
+    setSelectedCategory(cat);
+    setSelectedChildCategory(child);
     setOnlyAvailable(available);
     setPriceMin(min);
     setPriceMax(max);
     setSortOption(sort);
-    setCurrentPage(1);
+
+    lastQuery.current = { category: cat, childCategory: child, available, priceMin: min, priceMax: max, sort };
+    setVisibleCount(loadCount); // reset visible products when filters change
   }, [searchParams]);
 
-  // ---- Fetch products once ----
+  // ---- Fetch products ----
   useEffect(() => {
     fetch(API_URL)
       .then((res) => res.json())
@@ -55,27 +67,25 @@ export default function ProductsPage() {
       .catch((err) => console.error(err));
   }, [API_URL]);
 
-const updateQueryParams = (updates) => {
-  const params = new URLSearchParams(window.location.search); // ✅ always current
-  Object.entries(updates).forEach(([key, value]) => {
-    if (value === null || value === "all" || value === undefined) {
-      params.delete(key);
-    } else {
-      params.set(key, value);
+  const updateQueryParams = (updates) => {
+    const params = new URLSearchParams(window.location.search);
+
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === null || value === "all" || value === undefined) {
+        params.delete(key);
+      } else {
+        params.set(key, value);
+      }
+    });
+
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    if (newUrl !== window.location.href) {
+      isUpdatingUrl.current = true;
+      router.replace(newUrl, { scroll: false });
     }
-  });
+  };
 
-  const newUrl = `${window.location.pathname}?${params.toString()}`;
-  const oldUrl = window.location.pathname + window.location.search;
-
-  if (newUrl !== oldUrl) {
-    isUpdatingUrl.current = true;
-    router.replace(newUrl, { scroll: false });
-  }
-};
-
-
-  // ---- Filtering ----
+  // ---- Filtering & Sorting ----
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
 
@@ -113,11 +123,6 @@ const updateQueryParams = (updates) => {
         break;
     }
 
-    // Out-of-stock → end
-    filtered.sort(
-      (a, b) => (b.stock_quantity > 0 ? 1 : 0) - (a.stock_quantity > 0 ? 1 : 0)
-    );
-
     return filtered;
   }, [
     products,
@@ -129,14 +134,36 @@ const updateQueryParams = (updates) => {
     sortOption,
   ]);
 
-  // ---- Pagination ----
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const startIdx = (currentPage - 1) * productsPerPage;
-  const currentProducts = filteredProducts.slice(startIdx, startIdx + productsPerPage);
-
-  const goToPage = (page) => {
-    if (page >= 1 && page <= totalPages) setCurrentPage(page);
+// ---- Infinite scroll handler ----
+useEffect(() => {
+  const handleScroll = () => {
+    if (
+      window.innerHeight + window.scrollY >=
+      document.body.offsetHeight - 550
+    ) {
+      setVisibleCount((prev) =>
+        Math.min(prev + loadCount, filteredProducts.length)
+      );
+    }
   };
+
+  // initial check in case content is smaller than viewport
+  const checkInitialHeight = () => {
+    if (document.body.offsetHeight <= window.innerHeight && visibleCount < filteredProducts.length) {
+      setVisibleCount((prev) =>
+        Math.min(prev + loadCount, filteredProducts.length)
+      );
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  checkInitialHeight();
+
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [filteredProducts.length]);
+
+
+  const currentProducts = filteredProducts.slice(0, visibleCount);
 
   // ---- Categories list ----
   const categories = [
@@ -144,64 +171,57 @@ const updateQueryParams = (updates) => {
   ];
 
   return (
-       <main className="container overflow-x-hidden">
+    <main className="container overflow-x-hidden">
       <BreadCrumb />
 
       <div className="flex flex-col lg:flex-row gap-4 mt-5 mx-2 md:mx-0">
         {/* SIDE FILTER BOX */}
- <SideFilterBox
-  categories={categories}
-  selectedCategory={selectedChildCategory || selectedCategory}
-  onCategoryChange={(cat) => {
-    setCurrentPage(1);
-
-    if (cat === "all") {
-      // Reset both category and childCategory
-      setSelectedCategory("all");
-      setSelectedChildCategory(null);
-      updateQueryParams({ category: null, childCategory: null });
-    } else if (categories.includes(cat)) {
-      // Parent category
-      setSelectedCategory(cat);
-      setSelectedChildCategory(null);
-      updateQueryParams({ category: cat, childCategory: null });
-    } else {
-      // Child category
-      setSelectedChildCategory(cat);
-      updateQueryParams({ childCategory: cat });
-    }
-  }}
-  onlyAvailable={onlyAvailable}
-  onAvailabilityChange={(val) => {
-    setOnlyAvailable(val);
-    updateQueryParams({ available: val ? "true" : null });
-  }}
-  priceRange={{ min: priceMin, max: priceMax }}
-  onPriceChange={({ priceMin, priceMax }) => {
-    setPriceMin(priceMin);
-    setPriceMax(priceMax);
-    setCurrentPage(1);
-    updateQueryParams({ priceMin, priceMax });
-  }}
-  onClearFilters={() => {
-    setSelectedCategory("all");
-    setSelectedChildCategory(null);
-    setOnlyAvailable(false);
-    setPriceMin(0);
-    setPriceMax(30_000_000);
-    setCurrentPage(1);
-    updateQueryParams({
-      category: null,
-      childCategory: null,
-      available: null,
-      priceMin: null,
-      priceMax: null,
-      sort: null,
-    });
-  }}
-/>
-
-
+        <SideFilterBox
+          categories={categories}
+          selectedCategory={selectedChildCategory || selectedCategory}
+          onCategoryChange={(cat) => {
+            if (cat === "all") {
+              setSelectedCategory("all");
+              setSelectedChildCategory(null);
+              updateQueryParams({ category: null, childCategory: null });
+            } else if (categories.includes(cat)) {
+              setSelectedCategory(cat);
+              setSelectedChildCategory(null);
+              updateQueryParams({ category: cat, childCategory: null });
+            } else {
+              setSelectedChildCategory(cat);
+              updateQueryParams({ childCategory: cat });
+            }
+          }}
+          onlyAvailable={onlyAvailable}
+          onAvailabilityChange={(val) => {
+            setOnlyAvailable(val);
+            updateQueryParams({ available: val ? "true" : null });
+          }}
+          priceRange={{ min: priceMin, max: priceMax }}
+          onPriceChange={({ priceMin, priceMax }) => {
+            setPriceMin(priceMin);
+            setPriceMax(priceMax);
+            updateQueryParams({ priceMin, priceMax });
+          }}
+          onClearFilters={() => {
+            setSelectedCategory("all");
+            setSelectedChildCategory(null);
+            setOnlyAvailable(false);
+            setPriceMin(0);
+            setPriceMax(30_000_000);
+            setSortOption("محبوب ترین");
+            setVisibleCount(loadCount);
+            updateQueryParams({
+              category: null,
+              childCategory: null,
+              available: null,
+              priceMin: null,
+              priceMax: null,
+              sort: null,
+            });
+          }}
+        />
 
         {/* MAIN PRODUCT AREA */}
         <div className="lg:w-3/4">
@@ -220,8 +240,7 @@ const updateQueryParams = (updates) => {
                     key={label}
                     onClick={() => {
                       setSortOption(label);
-                      updateQueryParams("sort", label);
-                      setCurrentPage(1);
+                      updateQueryParams({ sort: label });
                     }}
                     className={
                       sortOption === label
@@ -243,54 +262,22 @@ const updateQueryParams = (updates) => {
           <div className="grid grid-cols-1 xxs:grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {currentProducts.length ? (
               currentProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  preserveQuery
+                />
               ))
             ) : (
-              <p className="text-gray-400 text-center col-span-full py-10">
-                محصولی یافت نشد
+              <p className="text-gray-400 flex justify-center col-span-full py-10">
+                <svg class="mr-3 size-5 animate-spin " viewBox="0 0 24 24">  </svg>
               </p>
             )}
           </div>
 
-          {/* PAGINATION */}
-          {totalPages > 1 && (
-            <div className="mt-10 flex justify-center">
-              <ul className="flex items-center gap-x-3">
-                <li
-                  onClick={() => goToPage(currentPage - 1)}
-                  className={`px-3 py-1 rounded ${
-                    currentPage === 1
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-blue-500 hover:text-white cursor-pointer"
-                  }`}
-                >
-                  قبلی
-                </li>
-                {Array.from({ length: totalPages }, (_, i) => (
-                  <li
-                    key={i}
-                    onClick={() => goToPage(i + 1)}
-                    className={`px-3 py-1 rounded ${
-                      currentPage === i + 1
-                        ? "bg-blue-500 text-white"
-                        : "hover:bg-blue-500 hover:text-white cursor-pointer"
-                    }`}
-                  >
-                    {i + 1}
-                  </li>
-                ))}
-                <li
-                  onClick={() => goToPage(currentPage + 1)}
-                  className={`px-3 py-1 rounded ${
-                    currentPage === totalPages
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-blue-500 hover:text-white cursor-pointer"
-                  }`}
-                >
-                  بعدی
-                </li>
-              </ul>
-            </div>
+          {/* LOADING INDICATOR */}
+          {visibleCount < filteredProducts.length && (
+            <p className="text-center text-gray-400 py-12">در حال بارگذاری...</p>
           )}
         </div>
       </div>

@@ -27,14 +27,14 @@ const AdminPanel = () => {
     const menuItems = [
         { id: "products", label: "محصولات", icon: "#shopping-bag" },
         { id: "categories", label: "دسته‌بندی محصولات", icon: "#squares-2x2" },
+        { id: "amazing-slider", label: "پیشنهاد شگفت انگیز", icon: "#photo" },
+        { id: "orders", label: "مدیریت سفارشات", icon: "#photo" },
         { id: "blog", label: "بلاگ", icon: "#newspaper" },
         { id: "slider", label: "اسلایدر صفحه اصلی", icon: "#photo" },
         { id: "banner", label: "بنر صفحه اصلی", icon: "#photo" },
         { id: "megamenu", label: "مگا منو", icon: "#photo" },
         { id: "tickets", label: "تیکت ها", icon: "#photo" },
         { id: "users", label: "کاربران", icon: "#photo" },
-        { id: "amazing-slider", label: "پیشنهاد شگفت انگیز", icon: "#photo" },
-        { id: "orders", label: "مدیریت سفارشات", icon: "#photo" },
         { id: "logout", label: "خروج", icon: "#arrow-left-end", isDanger: true },
     ];
 
