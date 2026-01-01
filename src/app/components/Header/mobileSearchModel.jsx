@@ -99,21 +99,7 @@ const MobileSearchModal = ({ searchModal, setSearchModal }) => {
         )}
 
         {/* --- Search Trends --- */}
-        {!searchTerm && (
-          <div className="pt-4">
-            <span className="flex items-center gap-x-1 text-sm text-gray-500 dark:text-gray-200">
-              <svg className="size-4">
-                <use href="#fire" />
-              </svg>
-              <p>جستجوهای پرطرفدار :</p>
-            </span>
-            <ul className="w-full flex items-center gap-1.5 mt-3 child:search-modal-list-item">
-  <li><a href="/products?category=mobile&childCategory=apple">#آیفون</a></li>
-              <li><a href="/products?category=laptop">#لپ‌تاپ</a></li>
-              <li><a href="/products?category=headphone">#هدفون</a></li>
-            </ul>
-          </div>
-        )}
+        {!searchTerm && (<div></div>)}
       </div>
     </div>
   );

@@ -48,7 +48,7 @@ const PriceBox = ({ count = 0, totalPrice = 0, totalDiscount = 0, finalPrice = 0
         const data = await res.json();
         console.log(data);
 
-        if (data) {
+        if (data.payment_url) {
           window.location.href = data.payment_url
 
         } else {

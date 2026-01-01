@@ -6,7 +6,7 @@ const Footer = ({ }) => {
         <div className="relative w-full bg-gray-900 dark:bg-gray-800 text-white rounded-2xl p-4 lg:p-9">
           <div className="flex items-start flex-col gap-x-7 lg:gap-x-10 gap-y-10 lg:flex-row flex-wrap">
             {/* About Section */}
-            <div className="flex-[2] w-full">
+            <div className="flex-2 w-full">
               <h2 className="footer_title">درباره  <span className="text-blue-500">تیکسـو</span> گیم</h2>
               <p className="leading-8 text-gray-400 mb-5">
                 تیکسو گیم با هدف فراهم‌کردن دسترسی آسان و مطمئن به انواع گیفت کارت‌های بین‌المللی فعالیت می‌کند. ما تلاش می‌کنیم تا محصولات معتبر را با قیمت مناسب و پشتیبانی واقعی در اختیار شما قرار دهیم تا تجربه‌ای امن و قابل اعتماد از خرید آنلاین داشته باشید.
@@ -48,7 +48,7 @@ const Footer = ({ }) => {
               <ul className="flex flex-col child:flex child:text-gray-400 child:items-center child:justify-between gap-y-6">
                 <li>
                   {/* <p>شماره تماس:</p> */}
-                  <p dir="ltr"><a href="tel:+9897727255110">097727255110</a>: شماره تماس </p>
+                  <p dir="ltr"><a href="tel:+01155272779">01155272779</a>: شماره تماس </p>
                 </li>
                 {/* <li> */}
                 {/* <p>آدرس ایمیل :</p>
@@ -84,7 +84,7 @@ const Footer = ({ }) => {
                   className="ring-2 ring-gray-400 text-gray-300 w-32 rounded-lg text-sm flex-center gap-x-2 py-1.5 px-2 mt-10"
                 >
                   بازگشت به بالا
-                  <svg className="size-4 rotate-[180deg]">
+                  <svg className="size-4 rotate-180">
                     <use href="#chevron" />
                   </svg>
                 </a>
