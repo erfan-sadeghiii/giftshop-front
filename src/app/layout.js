@@ -1,8 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import Icons from "./components/Icons";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import "./globals.css";
 import './styles/app.css';
 import ClientProviders from "./components/clientProvider";
 import AppInitializer from "./components/appInitializer";
