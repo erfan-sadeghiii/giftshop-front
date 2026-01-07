@@ -12,6 +12,7 @@ import UsersSection from "../components/adminPanel/usersSection";
 import MegaMenuAdmin from "../components/adminPanel/adminMegamenuSection";
 import AdminAmazingSlider from "../components/adminPanel/AdminAmazingSlider";
 import AdminCheckouts from "../components/adminPanel/adminCheckOuts";
+import AdminOfferCodeSection from "../components/adminPanel/AdminOfferCodeSection";
 
 // Example section components (you can create each in /components/admin)
 // import ProductsManager from "../components/admin/ProductsManager";
@@ -29,6 +30,7 @@ const AdminPanel = () => {
         { id: "categories", label: "دسته‌بندی محصولات", icon: "#squares-2x2" },
         { id: "amazing-slider", label: "پیشنهاد شگفت انگیز", icon: "#photo" },
         { id: "orders", label: "مدیریت سفارشات", icon: "#photo" },
+        { id: "offers", label: "کد های تخفیف", icon: "#photo" },
         { id: "blog", label: "بلاگ", icon: "#newspaper" },
         { id: "slider", label: "اسلایدر صفحه اصلی", icon: "#photo" },
         { id: "banner", label: "بنر صفحه اصلی", icon: "#photo" },
@@ -70,6 +72,9 @@ const AdminPanel = () => {
             case "orders":
                 
                 return <AdminCheckouts/>;
+            case "offers":
+                
+                return <AdminOfferCodeSection/>;
             case "logout":
                 return (
                     <div className="p-4 bg-red-100 dark:bg-red-900 rounded-lg shadow text-red-500">
