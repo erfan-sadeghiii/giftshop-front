@@ -20,7 +20,7 @@ export default function SideFilterBox({
   };
 
   return (
-    <div className="lg:sticky top-1 h-fit lg:w-1/4 hidden lg:flex flex-col gap-y-4 items-center shadow rounded-lg py-4 dark:bg-gray-800 bg-white">
+    <div className="lg:sticky top-1 h-fit lg:w-1/4 text-sm md:text-lg lg:flex flex-col gap-y-4 items-center shadow rounded-lg py-4 dark:bg-gray-800 bg-white">
       {/* HEADER */}
       <div className="flex items-center justify-between w-full px-2 xl:px-4">
         <span className="flex items-center gap-x-1">
