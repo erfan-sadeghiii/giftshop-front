@@ -72,7 +72,7 @@ export default function AmazingSlider({isAdmin=false}) {
             <SwiperSlide>
               <div className="amazing-card mx-auto">
                 <img
-                  className="w-28 h-28"
+                  
                   src="./images/slider/Amazings.svg"
                   alt="Timer"
                 />

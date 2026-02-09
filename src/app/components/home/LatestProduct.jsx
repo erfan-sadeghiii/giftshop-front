@@ -100,11 +100,13 @@ export default function LatestProducts() {
       {/* Product list */}
       <div className="swiper LatestProducts mt-5 w-full">
         <div className="swiper-wrapper py-5">
-          {filtered.length === 0 ? (
+         
+          {filtered.length == 0 ? (
             <p className="text-center w-full text-gray-500 dark:text-gray-400">
               در حال بارگذاری...
             </p>
           ) : (
+
             filtered.map((product) => (
               <div key={product.id} className="swiper-slide w-full product-card group">
                 {/* Product header */}
@@ -138,7 +140,7 @@ export default function LatestProducts() {
                 <a href={`/products/${product.slug}`}>
                   <img
                     className="product-card_img"
-                    src={process.env.NEXT_PUBLIC_API_URL+product.images[0] || "/images/products/1.png"}
+                    src={process.env.NEXT_PUBLIC_API_URL + product.images[0] || "/images/products/1.png"}
                     alt={product.title}
                   />
                 </a>
@@ -152,13 +154,13 @@ export default function LatestProducts() {
                     <div className="product-card_rate">
                       <span className="flex items-center gap-x-0.5 text-gray-400 text-sm">
                         <p> {product.comments && product.comments.length > 0
-                        ? (
+                          ? (
                             product.comments.reduce(
                               (acc, c) => acc + (c.isLiked ? 5 : 3),
                               0
                             ) / product.comments.length
                           ).toFixed(1)
-                        : "0.0"}</p>
+                          : "0.0"}</p>
                         <svg className="size-4 mb-1">
                           <use href="#star" />
                         </svg>

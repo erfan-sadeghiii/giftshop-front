@@ -81,7 +81,10 @@ export default function MegaMenuAdmin() {
           >
             {/* سربرگ دسته‌بندی */}
             <div className="flex justify-between items-center mb-2">
-              <h2 className="font-semibold text-xl text-gray-100">{cat.name}</h2>
+              <div>
+              <h2 className="font-semibold text-xl text-gray-100">{cat.name}</h2> <span>{cat.link}</span>
+
+              </div>
               <button
                 onClick={() => handleDelete(`megamenu/${cat.id}/`, "دسته‌بندی")}
                 className="text-red-500 hover:text-red-400 text-sm"

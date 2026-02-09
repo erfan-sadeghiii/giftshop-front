@@ -39,31 +39,35 @@ export default function HeaderSlider() {
   const displaySlides = slides.length < 2 ? [...slides, ...slides] : slides;
 
   return (
-    <div className="px-3 lg:container w-full mt-4 lg:mt-10">
-      <Swiper
-        dir="ltr"
-        modules={[Navigation, Pagination, Autoplay]}
-        spaceBetween={16}
-        slidesPerView={1}
-        loop={displaySlides.length > 1} // only loop if more than 1
-        autoplay={{ delay: 3000, disableOnInteraction: false }}
-        pagination={{ clickable: true }}
-        navigation
-        className="header-slider h-52 md:h-96 rounded-xl overflow-hidden cursor-pointer"
-      >
-        {displaySlides.map((slide, i) => (
-          <SwiperSlide key={`${slide.id}-${i}`}>
-            <a href={slide.link ?? "#"} className="block w-full h-full relative">
-              <Image 
+      <div className="px-3 lg:container w-full mt-4 lg:mt-10">
+  {/* HEIGHT CONTROLLER */}
+  <div className="h-52 md:h-[35rem] rounded-xl overflow-hidden">
+    <Swiper
+      dir="ltr"
+      modules={[Navigation, Pagination, Autoplay]}
+      spaceBetween={16}
+      slidesPerView={1}
+      loop={displaySlides.length > 1}
+      autoplay={{ delay: 3000, disableOnInteraction: false }}
+      pagination={{ clickable: true }}
+      navigation
+      className="header-slider w-full h-full"
+    >
+      {displaySlides.map((slide, i) => (
+        <SwiperSlide key={`${slide.id}-${i}`} className="h-full">
+          <a href={slide.link ?? "#"} className="block w-full h-full relative">
+            <Image
               fill
-                src={slide.picture}
-                alt={`Slide ${slide.id}`}
-                className="w-full h-full object-cover rounded-xl"
-              />
-            </a>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </div>
-  );
+              src={slide.picture}
+              alt={`Slide ${slide.id}`}
+              className="object-cover"
+            />
+          </a>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  </div>
+</div>
+
+      );
 }

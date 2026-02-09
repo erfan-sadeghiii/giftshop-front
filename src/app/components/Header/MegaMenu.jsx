@@ -48,7 +48,7 @@ const MegaMenu = () => {
                 <use href={`#${category.icon}`}></use>
               </svg>
             )}
-            <a href="#">{category.name}</a>
+            <a href={category.link}>{category.name}</a>
           </li>
         ))}
       </ul>

@@ -9,6 +9,10 @@ const AdminCheckouts = () => {
   const [checkouts, setCheckouts] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // Change this to show more/less items per page
+
   const fetchCheckouts = async () => {
     setLoading(true);
     try {
@@ -76,7 +80,6 @@ const AdminCheckouts = () => {
     }
   };
 
-  // ✅ Improved Swal design (RTL + clean layout)
   const showMoreInfo = (checkout) => {
     const itemsHTML = checkout.items
       .map(
@@ -169,6 +172,13 @@ const AdminCheckouts = () => {
     });
   };
 
+  // Pagination logic
+  const totalPages = Math.ceil(checkouts.length / itemsPerPage);
+  const displayedCheckouts = checkouts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+   );
+
   return (
     <div className="p-4 shadow rounded-lg bg-white dark:bg-gray-800 mt-5">
       <h2 className="font-DanaDemiBold text-lg mb-4">مدیریت سفارشات</h2>
@@ -176,82 +186,119 @@ const AdminCheckouts = () => {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-right text-gray-600 dark:text-gray-300">
-            <thead className="text-xs bg-gray-100 dark:bg-gray-900">
-              <tr className="border-b dark:border-gray-700">
-                <th className="px-4 py-2">ID</th>
-                <th className="px-4 py-2">کاربر</th>
-                <th className="px-4 py-2">مبلغ</th>
-                <th className="px-4 py-2">آیتم‌ها</th>
-                <th className="px-4 py-2">پرداخت</th>
-                <th className="px-4 py-2 w-40">عملیات</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {checkouts.map((co) => (
-                <tr key={co.id} className="border-b dark:border-gray-700">
-                  <td className="px-4 py-2">{co.id}</td>
-                  <td className="px-4 py-2">
-                    {co.user.username} ({co.user?.phone})
-                  </td>
-                  <td className="px-4 py-2">
-                    {co.amount.toLocaleString()} تومان
-                  </td>
-                  <td className="px-4 py-2">
-                    {co.items.slice(0, 1).map((item, i) => (
-                      <span key={i}>
-                        {item.product?.title?.slice(0, 20)} ({item.quantity})
-                      </span>
-                    ))}
-                    {co.items.length > 1 && (
-                      <span className="text-gray-400">
-                        {" "}
-                        +{co.items.length - 1}
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-2">
-                    {co.is_paid ? (
-                      <span className="text-green-500">پرداخت شده</span>
-                    ) : (
-                      <span className="text-red-500">پرداخت ناموفق</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-2 flex gap-2">
-                    <button
-                      onClick={() => showMoreInfo(co)}
-                      className="px-2 py-1 rounded bg-gray-200 dark:bg-gray-700"
-                    >
-                      جزئیات
-                    </button>
-                    <button
-                      onClick={() => togglePaid(co.id)}
-                      className="px-2 py-1 rounded bg-blue-500 text-white"
-                    >
-                      تغییر وضعیت
-                    </button>
-                    <button
-                      onClick={() => deleteCheckout(co.id)}
-                      className="px-2 py-1 rounded bg-red-500 text-white"
-                    >
-                      حذف
-                    </button>
-                  </td>
+        <>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-right text-gray-600 dark:text-gray-300">
+              <thead className="text-xs bg-gray-100 dark:bg-gray-900">
+                <tr className="border-b dark:border-gray-700">
+                  <th className="px-4 py-2">ID</th>
+                  <th className="px-4 py-2">کاربر</th>
+                  <th className="px-4 py-2">مبلغ</th>
+                  <th className="px-4 py-2">آیتم‌ها</th>
+                  <th className="px-4 py-2">پرداخت</th>
+                  <th className="px-4 py-2 w-40">عملیات</th>
                 </tr>
+              </thead>
+
+              <tbody>
+                {displayedCheckouts.map((co) => (
+                  <tr key={co.id} className="border-b dark:border-gray-700">
+                    <td className="px-4 py-2">{co.id}</td>
+                    <td className="px-4 py-2">
+                      {co.user.username} ({co.user?.phone})
+                    </td>
+                    <td className="px-4 py-2">
+                      {co.amount.toLocaleString()} تومان
+                    </td>
+                    <td className="px-4 py-2">
+                      {co.items.slice(0, 1).map((item, i) => (
+                        <span key={i}>
+                          {item.product?.title?.slice(0, 20)} ({item.quantity})
+                        </span>
+                      ))}
+                      {co.items.length > 1 && (
+                        <span className="text-gray-400">
+                          {" "}
+                          +{co.items.length - 1}
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2">
+                      {co.is_paid ? (
+                        <span className="text-green-500">پرداخت شده</span>
+                      ) : (
+                        <span className="text-red-500">پرداخت ناموفق</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2 flex gap-2">
+                      <button
+                        onClick={() => showMoreInfo(co)}
+                        className="px-2 py-1 rounded bg-gray-200 dark:bg-gray-700"
+                      >
+                        جزئیات
+                      </button>
+                      <button
+                        onClick={() => togglePaid(co.id)}
+                        className="px-2 py-1 rounded bg-blue-500 text-white"
+                      >
+                        تغییر وضعیت
+                      </button>
+                      <button
+                        onClick={() => deleteCheckout(co.id)}
+                        className="px-2 py-1 rounded bg-red-500 text-white"
+                      >
+                        حذف
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+
+                {checkouts.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="text-center py-4">
+                      دیتایی موجود نیست
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex justify-center mt-4 gap-2">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700"
+              >
+                قبلی
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
+                <button
+                  key={num}
+                  onClick={() => setCurrentPage(num)}
+                  className={`px-3 py-1 rounded ${
+                    currentPage === num
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 dark:bg-gray-700"
+                  }`}
+                >
+                  {num}
+                </button>
               ))}
 
-              {checkouts.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="text-center py-4">
-                    دیتایی موجود نیست
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700"
+              >
+                بعدی
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

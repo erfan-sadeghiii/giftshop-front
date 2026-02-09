@@ -35,7 +35,7 @@ export default function LoginPage() {
               htmlFor="email"
               className="block text-sm font-medium text-gray-600 dark:text-gray-200"
             >
-              ایمیل
+             ایمیل یا نام کاربری
             </label>
             <input
               type="text"

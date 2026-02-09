@@ -5,7 +5,7 @@ import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
 
 export default function CategoryForm({ onAdded }) {
-  const [form, setForm] = useState({ name: "", icon: "", order: 0 });
+  const [form, setForm] = useState({ name: "",link:"", icon: "", order: 0 });
   const { accessToken } = useAuth();
 
   const handleSubmit = async (e) => {
@@ -17,7 +17,7 @@ export default function CategoryForm({ onAdded }) {
         },
       });
       Swal.fire("✅ موفقیت", "دسته‌بندی با موفقیت اضافه شد", "success");
-      setForm({ name: "", icon: "", order: 0 });
+      setForm({ name: "",link:"", icon: "", order: 0 });
       onAdded();
     } catch {
       Swal.fire("خطا", "امکان اضافه کردن دسته‌بندی وجود ندارد", "error");
@@ -35,6 +35,13 @@ export default function CategoryForm({ onAdded }) {
         className="bg-gray-800 border border-gray-700 text-gray-200 p-2 rounded w-40"
         value={form.name}
         onChange={(e) => setForm({ ...form, name: e.target.value })}
+      />
+      <input
+        type="text"
+        placeholder="لینک"
+        className="bg-gray-800 border border-gray-700 text-gray-200 p-2 rounded w-40"
+        value={form.link}
+        onChange={(e) => setForm({ ...form, link: e.target.value })}
       />
       <input
         type="text"

@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import PriceSlider from "./priceSlider";
+const toArray = (v) => (Array.isArray(v) ? v : v ? [v] : []);
 
 export default function SideFilterBox({
-  categories = [],
-  selectedCategory,
-  onCategoryChange,
+  categories = [],                // parent categories
+  childCategories = [],           // child categories
+  selectedCategory = [],          // selected parent
+  selectedChildCategory = [],     // selected child
+  onCategoryChange,               // function(cat, type)
   onlyAvailable,
   onAvailabilityChange,
   priceRange,
@@ -37,7 +40,7 @@ export default function SideFilterBox({
       </div>
 
       <div className="w-full divide-y divide-slate-200 dark:divide-gray-700/20">
-        {/* CATEGORY FILTER */}
+        {/* PARENT CATEGORY FILTER */}
         <div>
           <button
             onClick={() => toggleAccordion(1)}
@@ -57,30 +60,15 @@ export default function SideFilterBox({
               }`}
           >
             <div className="text-gray-700 dark:text-gray-300 w-full flex flex-col gap-y-1.5 px-2 xl:px-4">
-              <div className="inline-flex items-center mr-2.5 mt-1">
-                <input
-                  type="radio"
-                  id="cat-all"
-                  name="category"
-                  value="all"
-                  checked={selectedCategory === "all"}
-                  onChange={(e) => onCategoryChange(e.target.value)}
-                  className="h-4 w-4 accent-blue-500 cursor-pointer"
-                />
-                <label htmlFor="cat-all" className="mr-2 cursor-pointer">
-                  همه کالاها
-                </label>
-              </div>
-
               {categories.map((cat, idx) => (
                 <div key={idx} className="inline-flex items-center mr-2.5 mt-1">
                   <input
-                    type="radio"
+                    type="checkbox"
                     id={`cat-${cat}`}
                     name="category"
                     value={cat}
-                    checked={selectedCategory === cat}
-                    onChange={(e) => onCategoryChange(e.target.value)}
+                    checked={toArray(selectedCategory).includes(cat)}
+                    onChange={(e) => onCategoryChange(e.target.value, "parent")}
                     className="h-4 w-4 accent-blue-500 cursor-pointer"
                   />
                   <label
@@ -94,6 +82,51 @@ export default function SideFilterBox({
             </div>
           </div>
         </div>
+
+        {/* CHILD CATEGORY FILTER */}
+        {childCategories.length > 0 && (
+          <div>
+            <button
+              onClick={() => toggleAccordion(2)}
+              className="w-full flex justify-between items-center px-2 xl:px-4 pt-4 mb-4 text-gray-800 dark:text-gray-100"
+            >
+              <span>زیر دسته</span>
+              <svg
+                className={`size-4 transition-transform duration-300 ${accordionOpen[2] ? "rotate-90" : ""
+                  }`}
+              >
+                <use href="#chevron-left" />
+              </svg>
+            </button>
+
+            <div
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${accordionOpen[2] ? "max-h-[500px] pb-3" : "max-h-0"
+                }`}
+            >
+              <div className="text-gray-700 dark:text-gray-300 w-full flex flex-col gap-y-1.5 px-2 xl:px-4">
+                {childCategories.map((cat, idx) => (
+                  <div key={idx} className="inline-flex items-center mr-2.5 mt-1">
+                    <input
+                      type="checkbox"
+                      id={`child-${cat}`}
+                      name="childCategory"
+                      value={cat}
+                      checked={toArray(selectedChildCategory).includes(cat)}
+                      onChange={(e) => onCategoryChange(e.target.value, "child")}
+                      className="h-4 w-4 accent-blue-500 cursor-pointer"
+                    />
+                    <label
+                      htmlFor={`child-${cat}`}
+                      className="mr-2 cursor-pointer text-gray-800 dark:text-gray-400"
+                    >
+                      {cat}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* AVAILABILITY SWITCH */}
         <div
@@ -121,7 +154,6 @@ export default function SideFilterBox({
         </div>
 
         {/* PRICE RANGE */}
-
         <PriceSlider
           min={priceRange.min}
           max={priceRange.max}
