@@ -148,6 +148,10 @@ const AdminCheckouts = () => {
                 </span>
               </td>
             </tr>
+            <tr>
+              <td style="padding:6px 0;color:#9ca3af;">توضیحات</td>
+              <td style="padding:6px 0;"><p>${checkout.description || "—"}</p></td>
+            </tr>
           </table>
 
           <hr style="margin:12px 0;border-color:#e5e7eb" />
@@ -177,7 +181,7 @@ const AdminCheckouts = () => {
   const displayedCheckouts = checkouts.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
-   );
+  );
 
   return (
     <div className="p-4 shadow rounded-lg bg-white dark:bg-gray-800 mt-5">
@@ -279,11 +283,10 @@ const AdminCheckouts = () => {
                 <button
                   key={num}
                   onClick={() => setCurrentPage(num)}
-                  className={`px-3 py-1 rounded ${
-                    currentPage === num
+                  className={`px-3 py-1 rounded ${currentPage === num
                       ? "bg-blue-500 text-white"
                       : "bg-gray-200 dark:bg-gray-700"
-                  }`}
+                    }`}
                 >
                   {num}
                 </button>

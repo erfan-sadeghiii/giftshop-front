@@ -15,11 +15,14 @@ const PriceBox = ({
   const cart = useSelector(selectCartEntities);
   const cartItems = Object.values(cart || {});
 
+
   const [offerCode, setOfferCode] = useState("");
   const [offerDiscount, setOfferDiscount] = useState(0);
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [permission, setPermission] = useState(false);
+  const [description, setDescription] = useState("");
+  
   // ✅ FINAL PRICE LOGIC
   const finalPrice = useMemo(() => {
     return Math.max(
@@ -55,7 +58,7 @@ const PriceBox = ({
 
       const data = await res.json();
       // console.log(data);
-      
+
       if (!res.ok) {
         setOfferDiscount(0);
         setStatus(data.detail || data[0] || "کد تخفیف نامعتبر است");
@@ -97,10 +100,10 @@ const PriceBox = ({
             Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify({
-            amount: totalPrice- totalDiscount,
-            code:offerCode,
+            amount: totalPrice - totalDiscount,
+            code: offerCode,
             cartItems,
-            description: "Shop payment",
+            description: description || "Shop payment",
             metadata: {
               mobile: `${user.mobile}` || "",
               email: user.email || "",
@@ -110,7 +113,7 @@ const PriceBox = ({
       );
 
       const data = await res.json();
-// console.log(data);
+      // console.log(data);
 
       if (data.payment_url) {
         window.location.href = data.payment_url;
@@ -161,11 +164,10 @@ const PriceBox = ({
 
           {status && (
             <p
-              className={`text-sm ${
-                status.includes("✅")
-                  ? "text-green-600"
-                  : "text-red-500"
-              }`}
+              className={`text-sm ${status.includes("✅")
+                ? "text-green-600"
+                : "text-red-500"
+                }`}
             >
               {status}
             </p>
@@ -185,9 +187,51 @@ const PriceBox = ({
         </li>
       </ul>
 
+
+
+      <label className="flex items-start gap-2 bg-gray-100 text-gray-700 text-xs rounded-md px-3 py-2 w-full mt-4 cursor-pointer">
+        <input
+          type="checkbox"
+          className="mt-1 accent-blue-500"
+          checked={permission}
+          onChange={(e) => setPermission(e.target.checked)}
+        />
+        <span>
+          اینجانب با اطلاع کامل از مشخصات، شرایط و ضوابط مربوط به سفارش، مسئولیت انتخاب و ثبت آن را شخصاً بر عهده گرفته و با تأیید نهایی، متعهد به پرداخت مبلغ تعیین‌شده می‌باشم.
+        </span>
+      </label>
+
+
+      <p class="flex items-start gap-2 bg-gray-100 text-gray-700 text-xs rounded-md px-3 py-2 w-full mt-4">
+
+        <svg aria-hidden="true" class="w-4 h-4 flex-shrink-0 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <circle cx="12" cy="16" r="0.5"></circle>
+        </svg>
+
+        <span>سفارش ثبت‌شده حداکثر ظرف مدت ۲۴ ساعت از زمان تأیید پرداخت، تحویل خواهد شد.</span>
+      </p>
+
+      <div className="bg-gray-100 rounded-md p-3 mt-4 space-y-2">
+        <label className="text-xs text-gray-700">
+          توضیحات تکمیلی سفارش
+        </label>
+
+        <textarea
+          rows={3}
+          value={description}
+          onChange={(e)=>setDescription(e.target.value)}
+          className="w-full bg-white border text-black border-gray-200 rounded-md px-3 py-2 text-xs
+               focus:outline-none focus:ring-1 focus:ring-blue-500
+               resize-none"
+        />
+      </div>
+
       <button
+        disabled={!permission}
         onClick={handlePayment}
-        className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-2"
+        className="w-full mt-4 bg-blue-500 disabled:bg-gray-500 disabled:hover:bg-gray-400  hover:bg-blue-600 text-white rounded-lg py-2"
       >
         تایید و پرداخت
       </button>
